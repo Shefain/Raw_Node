@@ -7,7 +7,7 @@ Author : Shefain (MaHi)
 //Dependencies
 const http = require('http');
 const url = require('url');
-const {stringDecoder} = require('string_decoder')
+const {StringDecoder} = require('string_decoder')
 
 //app object - Module scaffolding
 const app = {};
@@ -47,24 +47,22 @@ app.handleReqRes = (req, res) => {
   
   
   // get body or payload
-  const decoder = new stringDecoder('utf-8')
+  const decoder = new StringDecoder('utf-8')
   let realData= '';
 
-  req.on('data',(buffer)=>{
-    realData +=decoder.write(buffer)
+  req.on('data',(chunk)=>{
+    realData +=decoder.write(chunk)
   })
-  
+
   req.on('end',()=>{
-    realData +=decoder.write(buffer)
+    realData +=decoder.end()
     console.log(realData)
-    decoder.end('End')
   })
   
 
 
 
-  console.log(hadersObj);
-
+  console.log(parsedUrl);
   res.end(' Hello world');
 };
 
