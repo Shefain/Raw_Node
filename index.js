@@ -5,30 +5,68 @@ Author : Shefain (MaHi)
 */
 
 //Dependencies
-const http = require('http')
+const http = require('http');
+const url = require('url');
+const {stringDecoder} = require('string_decoder')
 
 //app object - Module scaffolding
-const app = {}
-
+const app = {};
 
 // configaration
 app.config = {
-  port:3000
-}
+  port: 4000,
+};
 
 // create server
-app.createServer = ()=>{
-  const server = http.createServer(app.handleReqRes)
+app.createServer = () => {
+  const server = http.createServer(app.handleReqRes);
 
-  server.listen(app.config.port, ()=>{
-    console.log(`it's running...on port ${app.config.port}`)
-  })
-}
+  server.listen(app.config.port, () => {
+    console.log(`it's running on port ${app.config.port}...`);
+  });
+};
 
 // handle Request Response
-app.handleReqRes = (req,res)=>{
-  res.end(' Hello world')
-}
+app.handleReqRes = (req, res) => {
+  // get url and parse
+  const parsedUrl = url.parse(req.url, true);
+
+  // get the pathname
+  const path = parsedUrl.pathname;
+
+  // get the method as lower string
+  const method = req.method.toLowerCase();
+
+  // get the query string
+  const querStringObj = parsedUrl.query;
+
+  // get haders or meta data
+  const hadersObj = req.headers;
+  
+  
+  
+  
+  // get body or payload
+  const decoder = new stringDecoder('utf-8')
+  let realData= '';
+
+  req.on('data',(buffer)=>{
+    realData +=decoder.write(buffer)
+  })
+  
+  req.on('end',()=>{
+    realData +=decoder.write(buffer)
+    console.log(realData)
+    decoder.end('End')
+  })
+  
+
+
+
+  console.log(hadersObj);
+
+  res.end(' Hello world');
+};
 
 // Start the server
-app.createServer()
+app.createServer();
