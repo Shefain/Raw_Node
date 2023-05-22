@@ -4,44 +4,57 @@ Description : Handle req and response
 Author : Shefain (MaHi)
 */
 
+
 // Dependencies
 const url = require('url');
 const { StringDecoder } = require('string_decoder');
+const {notFoundHandaler} = require('../handalers/routeHandlers/notFoundHandaler');
+const routes = require('../routes')
 
-// module scaffolding
+
+/*
+Module scaffolding | 
+we use this method to push everything in a single object|
+it allows us to export a single a object |
+when we need the property we can call from the object
+*/ 
 const handler = {};
 
+
+// handle request and response 
 handler.handleReqRes = (req, res) => {
-  // get url and parse
-  const parsedUrl = url.parse(req.url, true);
+  
+  // properties from req ^ object
+  const parsedUrl = url.parse(req.url, true); // get url and parse  
+  const path = parsedUrl.pathname;  // get the pathname  
+  const method = req.method.toLowerCase();  // get the method as lower string  
+  const querStringObj = parsedUrl.query;  // get the query string  
+  const hadersObj = req.headers;  // get haders or meta data
 
-  // get the pathname
-  const path = parsedUrl.pathname;
+  // puting evering protperties of req in a single object for easy export 
+  const requestProperties = {
+    parsedUrl,
+    path,
+    method,
+    querStringObj,
+    hadersObj,
+  }
 
-  // get the method as lower string
-  const method = req.method.toLowerCase();
+  // we are selecting the path in routes  
+  const chosenHandler = routes[path] ? routes[path] : notFoundHandaler;
 
-  // get the query string
-  const querStringObj = parsedUrl.query;
+  // we are calling the handaler here
+  chosenHandler(requestProperties,(statusCode, payload)=>{
+    statusCode = typeof(statusCode) === 'number'? statusCode : 500
+    payload = typeof(payload) === 'object'? payload : {}
 
-  // get haders or meta data
-  const hadersObj = req.headers;
-
-  // get body or payload
-  const decoder = new StringDecoder('utf-8');
-  let realData = '';
-
-  req.on('data', (chunk) => {
-    realData += decoder.write(chunk);
-  });
-
-  req.on('end', () => {
-    realData += decoder.end();
-    console.log(realData);
-  });
-
-  console.log(parsedUrl);
+  })
   res.end(' Hello world');
+
+
 };
+
+
+
 
 module.exports = handler;
