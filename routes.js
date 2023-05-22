@@ -12,7 +12,7 @@ const {sampleHandler} = require('./handalers/routeHandlers/sampleHanaler')
 
 // module scaffolding
 const routes  = {
-  '/sample': sampleHandler,
+  sample : sampleHandler,
 }
 
 module.exports = routes

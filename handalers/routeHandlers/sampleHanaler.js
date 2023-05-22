@@ -15,4 +15,4 @@ handaler.sampleHandle = (requestProperties,callback)=>{
   })
 }
 
-module.exports = handaler
+module.exports = handaler;

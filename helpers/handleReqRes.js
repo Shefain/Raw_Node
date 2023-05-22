@@ -25,7 +25,7 @@ const handler = {};
 handler.handleReqRes = (req, res) => {
   
   // properties from req ^ object
-  const parsedUrl = url.parse(req.url, true); // get url and parse  
+  const parsedUrl = url.parse(req.url,false); // get url and parse  
   const path = parsedUrl.pathname;  // get the pathname  
   const method = req.method.toLowerCase();  // get the method as lower string  
   const querStringObj = parsedUrl.query;  // get the query string  
@@ -40,6 +40,8 @@ handler.handleReqRes = (req, res) => {
     hadersObj,
   }
 
+  let trimedPath = path[0]==='/'? console.log(path[0]=null): console.log('path',path) ;
+
   // we are selecting the path in routes  
   const chosenHandler = routes[path] ? routes[path] : notFoundHandaler;
 
@@ -48,8 +50,15 @@ handler.handleReqRes = (req, res) => {
     statusCode = typeof(statusCode) === 'number'? statusCode : 500
     payload = typeof(payload) === 'object'? payload : {}
 
+    const payloadString = JSON.stringify(payload)
+
+    // return response
+    res.writeHead(statusCode)
+    res.end(payloadString)
+
+
   })
-  res.end(' Hello world');
+;
 
 
 };
