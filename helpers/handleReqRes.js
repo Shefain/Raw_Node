@@ -4,37 +4,34 @@ Description : Handle req and response
 Author : Shefain (MaHi)
 */
 
-
 // Dependencies
 const url = require('url');
 const { StringDecoder } = require('string_decoder');
-const {notFoundHandaler} = require('../handalers/routeHandlers/notFoundHandaler');
-const routes = require('../routes')
-const {sampleHandler} = require('../handalers/routeHandlers/sampleHanaler');
-
+const {
+  notFoundHandaler,
+} = require('../handalers/routeHandlers/notFoundHandaler');
+const routes = require('../routes');
+const { sampleHandler } = require('../handalers/routeHandlers/sampleHanaler');
 
 /*
 Module scaffolding | 
 we use this method to push everything in a single object|
 it allows us to export a single a object |
 when we need the property we can call from the object
-*/ 
+*/
 const handler = {};
 
-
-// handle request and response 
+// handle request and response
 handler.handleReqRes = (req, res) => {
-  
   // properties from req ^ object
-  const parsedUrl = url.parse(req.url,false); // get url and parse  
-  const path = parsedUrl.pathname;  // get the pathname  
-  const trimedPath = path.replace(/^\/+|\/+$/g,'') ; // removed the / from the starting and ending only
-  const method = req.method.toLowerCase();  // get the method as lower string  
-  const querStringObj = parsedUrl.query;  // get the query string  
-  const hadersObj = req.headers;  // get haders or meta data
+  const parsedUrl = url.parse(req.url, false); // get url and parse
+  const path = parsedUrl.pathname; // get the pathname
+  const trimedPath = path.replace(/^\/+|\/+$/g, ''); // removed the / from the starting and ending only
+  const method = req.method.toLowerCase(); // get the method as lower string
+  const querStringObj = parsedUrl.query; // get the query string
+  const hadersObj = req.headers; // get haders or meta data
 
-
-  // puting evering protperties of req in a single object for easy export 
+  // puting evering protperties of req in a single object for easy export
   const requestProperties = {
     parsedUrl,
     path,
@@ -42,32 +39,38 @@ handler.handleReqRes = (req, res) => {
     method,
     querStringObj,
     hadersObj,
-  }
+  };
 
-  // we are selecting the path in routes  
-  const chosenHandler = routes[trimedPath] ? routes[trimedPath]: notFoundHandaler ;
+  const decoder = new StringDecoder('utf-8');
 
-  // we are calling the handaler here
-  chosenHandler(requestProperties, (statusCode, payload)=>{
+  // we are selecting the path in routes
+  const chosenHandler = routes[trimedPath]
+    ? routes[trimedPath]
+    : notFoundHandaler;
 
-    statusCode = typeof(statusCode) === 'number'? statusCode : 500
-    payload = typeof(payload) === 'object'? payload : {}
+  let storeChunk = '';
 
-    const payloadString = JSON.stringify(payload)
+  req.on('data', (chunk) => {
+    storeChunk += decoder.write(chunk);
+  });
 
-    // return response
-    res.writeHead(statusCode)
-    console.log(trimedPath)
-    res.end(payloadString)
+  req.on('end', (chunk) => {
+    storeChunk += decoder.end();
 
+    // we are calling the handaler here
+    chosenHandler(requestProperties, (statusCode, payload) => {
+      statusCode = typeof statusCode === 'number' ? statusCode : 500;
+      payload = typeof payload === 'object' ? payload : {};
 
-  })
-;
+      const payloadString = JSON.stringify(payload);
 
+      // return response
+      res.writeHead(statusCode);
+      res.end(payloadString);
+    });
 
+    res.end(' hi ');
+  });
 };
-
-
-
 
 module.exports = handler;

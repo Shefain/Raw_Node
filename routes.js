@@ -5,11 +5,11 @@ Author : Shefain (MaHi)
 */
 
 // dependencies
-const {sampleHandle } = require('./handalers/routeHandlers/sampleHanaler');
+const { sampleHandle } = require('./handalers/routeHandlers/sampleHanaler');
 
 // module scaffolding
 const routes = {
-  'sample': sampleHandle,
+  sample: sampleHandle,
 };
 
 module.exports = routes;

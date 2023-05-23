@@ -4,48 +4,35 @@ Description : A restFul API to monitor up or down time of user difined links
 Author : Shefain (MaHi)
 */
 
-
-
 // Dependencies
 const http = require('http');
 const { handleReqRes } = require('./helpers/handleReqRes');
-
-
+const environment  = require('./helpers/invironment')
 
 /*
 app object - Module scaffolding | 
 we use this method to push everything in a single object|
 it allows us to export a single a object |
 when we need the property we can call from the object
-*/ 
+*/
 const app = {};
-
-
 
 // configaration
 app.config = {
-  port: 4000,
-
+  port: environment.port,
 };
-
-
 
 // create server
 app.createServer = () => {
   const server = http.createServer(app.handleReqRes);
 
-  server.listen(app.config.port, () => {
-    console.log(`it's running on port ${app.config.port}...`);
+  server.listen(environment.port, () => {
+    console.log(`it's running on port ${environment.port}...`);
   });
-
 };
-
-
 
 // handle Request Response
 app.handleReqRes = handleReqRes;
-
-
 
 // Start the server
 app.createServer();
