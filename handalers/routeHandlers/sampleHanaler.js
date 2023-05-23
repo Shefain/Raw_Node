@@ -8,11 +8,10 @@ Author : Shefain (MaHi)
 
 const handaler = {};
 
-handaler.sampleHandle = (requestProperties,callback)=>{
-  
-  callback(200,{
-    message:" it's from smaple handaler"
-  })
-}
+handaler.sampleHandle = (requestProperties, callback) => {
+  callback(200, {
+    message: " it's from sample handler (Success)",
+  });
+};
 
 module.exports = handaler;

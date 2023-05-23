@@ -8,10 +8,10 @@ Author : Shefain (MaHi)
 
 const handaler = {};
 
-handaler.notFoundHandaler = (requestProperties, callback)=>{
-  callback(404,{
-    message: '<h1> not found</h1>'
-  })
-}
+handaler.notFoundHandaler = (requestProperties, callback) => {
+  callback(404, {
+    message: '<h1> Not Found </h1>',
+  });
+};
 
 module.exports = handaler;

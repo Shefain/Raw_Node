@@ -10,6 +10,7 @@ const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const {notFoundHandaler} = require('../handalers/routeHandlers/notFoundHandaler');
 const routes = require('../routes')
+const {sampleHandler} = require('../handalers/routeHandlers/sampleHanaler');
 
 
 /*
@@ -27,26 +28,28 @@ handler.handleReqRes = (req, res) => {
   // properties from req ^ object
   const parsedUrl = url.parse(req.url,false); // get url and parse  
   const path = parsedUrl.pathname;  // get the pathname  
+  const trimedPath = path.replace(/^\/+|\/+$/g,'') ; // removed the / from the starting and ending only
   const method = req.method.toLowerCase();  // get the method as lower string  
   const querStringObj = parsedUrl.query;  // get the query string  
   const hadersObj = req.headers;  // get haders or meta data
+
 
   // puting evering protperties of req in a single object for easy export 
   const requestProperties = {
     parsedUrl,
     path,
+    trimedPath,
     method,
     querStringObj,
     hadersObj,
   }
 
-  let trimedPath = path[0]==='/'? console.log(path[0]=null): console.log('path',path) ;
-
   // we are selecting the path in routes  
-  const chosenHandler = routes[path] ? routes[path] : notFoundHandaler;
+  const chosenHandler = routes[trimedPath] ? routes[trimedPath]: notFoundHandaler ;
 
   // we are calling the handaler here
-  chosenHandler(requestProperties,(statusCode, payload)=>{
+  chosenHandler(requestProperties, (statusCode, payload)=>{
+
     statusCode = typeof(statusCode) === 'number'? statusCode : 500
     payload = typeof(payload) === 'object'? payload : {}
 
@@ -54,6 +57,7 @@ handler.handleReqRes = (req, res) => {
 
     // return response
     res.writeHead(statusCode)
+    console.log(trimedPath)
     res.end(payloadString)
 
 
