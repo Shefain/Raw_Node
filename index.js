@@ -19,8 +19,10 @@ when we need the property we can call from the object
 const app = {};
 
 
-data.create('test','NewFile',{name:'bangladesh'},(err,)=>{
-  console.log(' error was found ')
+data.create('test',"file"," hi my name is mahi ",(e )=>{
+
+  console.log("error",e )
+
 })
 
 // configaration
