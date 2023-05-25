@@ -8,6 +8,7 @@ Author : Shefain (MaHi)
 const http = require('http');
 const { handleReqRes } = require('./helpers/handleReqRes');
 const environment  = require('./helpers/invironment')
+const data = require('./lib/data2')
 
 /*
 app object - Module scaffolding | 
@@ -16,6 +17,11 @@ it allows us to export a single a object |
 when we need the property we can call from the object
 */
 const app = {};
+
+
+data.create('test','NewFile',{name:'bangladesh'},(err,)=>{
+  console.log(' error was found ')
+})
 
 // configaration
 app.config = {
